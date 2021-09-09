@@ -11,5 +11,5 @@ inputs:
     description: "wether or not to download chrome"
     default: false
 runs:
-  using: 'node14'
+  using: 'node12'
   main: 'dist/index.js'
