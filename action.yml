@@ -10,7 +10,6 @@ inputs:
   chrome:
     description: "wether or not to download chrome"
     default: false
-outputs:
 runs:
   using: 'node14'
   main: 'dist/index.js'
