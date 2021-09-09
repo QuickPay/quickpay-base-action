@@ -37,6 +37,7 @@ async function run() {
     if (sshKey) {
       fs.mkdirSync(home + "/.ssh")
       fs.writeFileSync(home + "/.ssh/id_ed25519", sshKey)
+      console.log(sshKey)
       cp.execSync("ssh-keygen -F github.com || ssh-keyscan github.com >> ~/.ssh/known_hosts")
       cp.execSync("chmod 600 ~/.ssh/id_ed25519")
     }
