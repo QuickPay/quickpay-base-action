@@ -1,7 +1,9 @@
 const core = require('@actions/core');
-const github = require("@actions/github")
 const fs = require("fs")
 const cp = require("child_process")
+const os = require("os")
+
+const home = os.homedir()
 
 async function run() {
   try {
@@ -26,8 +28,8 @@ async function run() {
       cp.execSync("sudo apt-get install -y " + aptDeps)
     }
     if (sshKey) {
-      fs.mkdirSync("~/.ssh")
-      fs.writeFileSync("~/.ssh/id_ed25519", sshKey)
+      fs.mkdirSync(home + "/.ssh")
+      fs.writeFileSync(home + "/.ssh/id_ed25519", sshKey)
       cp.execSync("ssh-keygen -F github.com || ssh-keyscan github.com >> ~/.ssh/known_hosts")
       cp.execSync("chmod 600 ~/.ssh/id_ed25519")
     }
