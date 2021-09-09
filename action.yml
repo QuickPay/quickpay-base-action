@@ -1,13 +1,16 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: "Wait"
+description: "Wait a designated number of milliseconds"
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
-    required: true
-    default: '1000'
+  ssh_key:
+    description: "ssh key"
+    default: null
+  prod_apt_deps:
+    description: "wether or not to install all apt dependencies used in production envoriments"
+    default: false
+  chrome:
+    description: "wether or not to download chrome"
+    default: false
 outputs:
-  time: # output will be available to future steps
-    description: 'The message to output'
 runs:
-  using: 'node12'
+  using: 'node14'
   main: 'dist/index.js'

@@ -1,18 +1,37 @@
 const core = require('@actions/core');
-const wait = require('./wait');
+const github = require("@actions/github")
+const fs = require("fs")
+const cp = require("child_process")
 
-
-// most @actions toolkit packages have async methods
 async function run() {
   try {
-    const ms = core.getInput('milliseconds');
-    core.info(`Waiting ${ms} milliseconds ...`);
+    const sshKey = core.getInput("ssh_key", { required: false })
+    const prodAptDeps = core.getBooleanInput("prod_apt_deps", { required: false })
+    const chrome = core.getBooleanInput("chrome", { required: false })
+    if (chrome) {
+      cp.execSync("wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - ")
+      cp.execSync(`sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'`)
+    }
+    if (chrome || prodAptDeps) {
+      cp.execSync("sudo apt-get update")
+      const aptDeps = (chrome ? ["chromium-chromedriver", "google-chrome-stable"] : [])
+        .concat(prodAptDeps ? [
+          "libpq-dev",
+          "libcurl4-openssl-dev",
+          "libxml2-dev",
+          "libxslt1-dev",
+          "zlib1g-dev",
+          "netcat-openbsd",
+          "libsasl2-dev"] : []).join(" ")
+      cp.execSync("sudo apt-get install -y " + aptDeps)
+    }
+    if (sshKey) {
+      fs.mkdirSync("~/.ssh")
+      fs.writeFileSync("~/.ssh/id_ed25519", sshKey)
+      cp.execSync("ssh-keygen -F github.com || ssh-keyscan github.com >> ~/.ssh/known_hosts")
+      cp.execSync("chmod 600 ~/.ssh/id_ed25519")
+    }
 
-    core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await wait(parseInt(ms));
-    core.info((new Date()).toTimeString());
-
-    core.setOutput('time', new Date().toTimeString());
   } catch (error) {
     core.setFailed(error.message);
   }
