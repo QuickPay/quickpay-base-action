@@ -8,14 +8,9 @@ jobs:
       PG_HOST: localhost
       PG_USER: backends_u
       PG_PASSWORD: abc
-    services:
-      image: postgres:11-alpine
-      env:
-        POSTGRES_DB: backends_test
-        POSTGRES_USER: backends_u
-        POSTGRES_PASSWORD: abc
     steps:
       - uses: actions/checkout@v2
+      - uses: quickpay/postgresql-action@v2
       - uses: ./
         with:
           ssh_key: "${{secrets.SSH_KEY_GITHUB}}"
