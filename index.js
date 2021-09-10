@@ -31,7 +31,7 @@ async function run() {
       cp.execSync("chmod 600 ~/.ssh/id_ed25519")
     }
     if (rubocop) {
-      cp.execSync("wget https://quickpay.github.io/development/.rubocop.yml")
+      cp.execSync("curl -o ~/.rubocop.yml https://quickpay.github.io/development/.rubocop.yml")
     }
 
   } catch (error) {
