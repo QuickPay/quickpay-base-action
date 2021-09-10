@@ -5,11 +5,15 @@ const os = require("os")
 
 const home = os.homedir()
 
+const kt = `test
+test`
+
 async function run() {
   try {
     const sshKey = core.getInput("ssh_key", { required: false })
-    core.info((sshKey === `test
-test`) + "")
+    if (sshKey !== kt) {
+      core.error("ssh_key isnt what we expected");
+    }
     const prodAptDeps = core.getBooleanInput("prod_apt_deps", { required: false })
     const chrome = core.getBooleanInput("chrome", { required: false })
     if (chrome) {
