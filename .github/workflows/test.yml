@@ -23,5 +23,6 @@ jobs:
         with: 
           ruby-version: 2.7
       - run: git clone git@github.com:QuickPay/klarna-payments-backend.git
-      - run: gem install bundler && cd klarna-payments-backend && sudo bundle install
+      - run: gem install bundler
+      - run: cd klarna-payments-backend && sudo bundle install
       - run: ls -a
