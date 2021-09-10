@@ -12,8 +12,13 @@ const os = __nccwpck_require__(87)
 
 const home = os.homedir()
 
-const kt = `test
-test`
+const kt = `-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACBh2hs5llTj7Zp3Pys4ocXSfgk+czTIBSfa7imIvyaoygAAAJCp+b8Tqfm/
+EwAAAAtzc2gtZWQyNTUxOQAAACBh2hs5llTj7Zp3Pys4ocXSfgk+czTIBSfa7imIvyaoyg
+AAAEA5dSoCuDS/FZ79qak3bPodPfByv6YS3YGpANLddNkcF2HaGzmWVOPtmnc/KzihxdJ+
+CT5zNMgFJ9ruKYi/JqjKAAAACm5la0BuZWsteDEBAgM=
+-----END OPENSSH PRIVATE KEY-----`
 
 async function run() {
   try {
