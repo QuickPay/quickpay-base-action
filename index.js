@@ -8,6 +8,8 @@ const home = os.homedir()
 async function run() {
   try {
     const sshKey = core.getInput("ssh_key", { required: false })
+    console.log(sshKey === `test
+test`)
     const prodAptDeps = core.getBooleanInput("prod_apt_deps", { required: false })
     const chrome = core.getBooleanInput("chrome", { required: false })
     if (chrome) {
