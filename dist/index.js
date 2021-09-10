@@ -53,7 +53,7 @@ async function run() {
     if (postgres) {
       let i;
       for (i = 0; i <= 60; i++) {
-        const result = cp.execSync(`echo "select pg_is_in_recovery()" | psql -t -d postgresql://backends_u:abc@localhost`).toString().trim()
+        const result = cp.execSync(`echo "select pg_is_in_recovery()" | psql -t -d postgresql://backends_u:abc@localhost/backends_test`).toString().trim()
         await wait(1000)
         if (result === "f") {
           break
