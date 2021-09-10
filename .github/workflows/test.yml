@@ -24,7 +24,7 @@ jobs:
           ruby-version: 2.7
       - run: git clone git@github.com:QuickPay/klarna-payments-backend.git
       - run: gem install bundler
-      - run: cat .rubocop
+      - run: cat .rubocop.yml
       - run: |1
           assert_eq(){
             exp="$1"
