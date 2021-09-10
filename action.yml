@@ -14,7 +14,11 @@ inputs:
     description: "wether or not to download rubocop"
     default: false
   postgres:
+    default: false
     description: "wether or not to install postgresql-client and dockerize"
+  gem_server_credentials:
+    default: null
+    description: "credentials for gem server"
 runs:
   using: 'node12'
   main: 'dist/index.js'

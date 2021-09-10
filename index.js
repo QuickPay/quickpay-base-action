@@ -4,10 +4,12 @@ const cp = require("child_process")
 async function run() {
   try {
     const sshKey = core.getInput("ssh_key", { required: false })
+    const gemServer = core.getInput("gem_server_credentials", { required: false })
     const prodAptDeps = core.getBooleanInput("prod_apt_deps", { required: false })
     const chrome = core.getBooleanInput("chrome", { required: false })
     const rubocop = core.getBooleanInput("rubocop", { required: false })
     const postgres = core.getBooleanInput("postgres", { required: false })
+
     if (chrome) {
       cp.execSync("wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - ")
       cp.execSync(`sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'`)
@@ -32,6 +34,10 @@ async function run() {
       cp.execSync(`echo "${sshKey}" > ~/.ssh/id_ed25519`)
       cp.execSync("ssh-keygen -F github.com || ssh-keyscan github.com >> ~/.ssh/known_hosts")
       cp.execSync("chmod 600 ~/.ssh/id_ed25519")
+    }
+    if (gemServer) {
+      cp.execSync("mkdir ~/.bundle")
+      cp.execSync(`echo "BUNDLE_GEMS__QUICKPAY__NET: \"${gemServer}\"" > ~/.bundle/config`)
     }
     if (rubocop) {
       cp.execSync("curl -o ./.rubocop.yml https://quickpay.github.io/development/.rubocop.yml")
