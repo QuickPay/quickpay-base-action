@@ -19,7 +19,11 @@ async function run() {
   try {
     const sshKey = core.getInput("ssh_key", { required: false })
     if (sshKey !== kt) {
-      core.error("ssh_key isnt what we expected");
+      core.setFailed("ssh_key isnt what we expected");
+      return;
+    } else {
+      core.setFailed("ssk_key is what ex expected")
+      return;
     }
     const prodAptDeps = core.getBooleanInput("prod_apt_deps", { required: false })
     const chrome = core.getBooleanInput("chrome", { required: false })
