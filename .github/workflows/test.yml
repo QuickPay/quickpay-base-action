@@ -7,4 +7,5 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./
         with:
-          ssh_key: super_secret
+          ssh_key: "${{secrets.SSH_KEY_GITHUB}}"
+      - run: git clone https://github.com/quickPay/payment
