@@ -3,6 +3,17 @@ on: [push]
 jobs:
   test:
     runs-on: "ubuntu-20.04"
+    env:
+      RACK_ENV: test
+      PG_HOST: localhost
+      PG_USER: backends_u
+      PG_PASSWORD: abc
+    services:
+      image: postgres:11-alpine
+      env:
+        POSTGRES_DB: backends_test
+        POSTGRES_USER: backends_u
+        POSTGRES_PASSWORD: abc
     steps:
       - uses: actions/checkout@v2
       - uses: ./
@@ -11,5 +22,6 @@ jobs:
           prod_apt_deps: true
           chrome: true
           rubocop: true 
+          postgres: true
       - run: git clone git@github.com:QuickPay/payment.git
       - run: ls -a

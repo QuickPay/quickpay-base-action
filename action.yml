@@ -13,6 +13,8 @@ inputs:
   rubocop:
     description: "wether or not to download rubocop"
     default: false
+  postgres:
+    description: "wether or not to install postgresql-client and dockerize"
 runs:
   using: 'node12'
   main: 'dist/index.js'
