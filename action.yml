@@ -10,6 +10,9 @@ inputs:
   chrome:
     description: "wether or not to download chrome"
     default: false
+  rubocop:
+    description: "wether or not to download rubocop"
+    default: false
 runs:
   using: 'node12'
   main: 'dist/index.js'
