@@ -47,7 +47,7 @@ async function run() {
     if (postgres) {
       let i;
       for (i = 0; i <= 60; i++) {
-        const result = cp.execSync(`echo "select pg_is_in_recovery()" | psql -t -d postgresql://backends_u@localhost`).toString().trim()
+        const result = cp.execSync(`echo "select pg_is_in_recovery()" | psql -t -d postgresql://backends_u:abc@localhost`).toString().trim()
         await wait(1000)
         if (result === "f") {
           break
@@ -57,7 +57,7 @@ async function run() {
         core.setFailed("postgresql database timed out")
         return
       }
-      cp.execSync(`psql -d postgresql://backends_u@localhost/backends_test -c 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";'`)
+      cp.execSync(`psql -d postgresql://backends_u:abc@localhost/backends_test -c 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";'`)
     }
   } catch (error) {
     core.setFailed(error.message);
