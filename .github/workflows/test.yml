@@ -25,7 +25,8 @@ jobs:
       - run: git clone git@github.com:QuickPay/klarna-payments-backend.git
       - run: gem install bundler
       - run: cat .rubocop.yml
-      - run: |1
+      - name: Tests
+        run: |1
           assert_eq(){
             exp="$1"
             shift
@@ -37,8 +38,8 @@ jobs:
               exit 1
             fi
           }
-      - name: Test connection to postgres server
-        run: assert_eq "test" $(psql -d postgresql://backends_u:abc@localhost/backends_test -c "select 'test';")
+
+          assert_eq "test" $(psql -d postgresql://backends_u:abc@localhost/backends_test -c "select 'test';")
       - name: Test pgcrypto is installed
         run: psql -S -d postgresql://backends_u:abc@localhost/backends_test -c "select gen_random_uuid();"
       - run: cd klarna-payments-backend && bundle install
