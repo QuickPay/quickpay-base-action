@@ -8,4 +8,4 @@ jobs:
       - uses: ./
         with:
           ssh_key: "${{secrets.SSH_KEY_GITHUB}}"
-      - run: git clone https://github.com/quickPay/payment
+      - run: git clone git@github.com:QuickPay/payment.git
