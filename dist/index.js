@@ -8,14 +8,18 @@ require('./sourcemap-register.js');module.exports =
 const core = __nccwpck_require__(186);
 const cp = __nccwpck_require__(129)
 
+const getBool = (key) => core.getBooleanInput(key, { required: false })
+
+const getString = (key) => core.getInput(key, { required: false })
+
 async function run() {
   try {
-    const sshKey = core.getInput("ssh_key", { required: false })
-    const gemServer = core.getInput("gem_server_credentials", { required: false })
-    const prodAptDeps = core.getBooleanInput("prod_apt_deps", { required: false })
-    const chrome = core.getBooleanInput("chrome", { required: false })
-    const rubocop = core.getBooleanInput("rubocop", { required: false })
-    const postgres = core.getBooleanInput("postgres", { required: false })
+    const sshKey = getString("ssh_key")
+    const gemServer = getString("gem_server_credentials")
+    const prodAptDeps = getBool("prod_apt_deps")
+    const chrome = getBool("chrome")
+    const rubocop = getBool("rubocop")
+    const postgres = getBool("postgres")
 
     if (chrome) {
       cp.execSync("wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - ")
@@ -51,9 +55,13 @@ async function run() {
 
     }
     if (postgres) {
+      const db = getString("postgresql db")
+      const user = getString("postgresql user")
+      const password = getString("postgresql password")
+      const connectionString = `postgresql://${user}:${password}@localhost/${db}`
       let i;
       for (i = 0; i <= 60; i++) {
-        const result = cp.execSync(`echo "select pg_is_in_recovery()" | psql -t -d postgresql://backends_u:abc@localhost/backends_test`).toString().trim()
+        const result = cp.execSync(`echo "select pg_is_in_recovery()" | psql -t -d ${connectionString}`).toString().trim()
         await wait(1000)
         if (result === "f") {
           break
@@ -63,7 +71,7 @@ async function run() {
         core.setFailed("postgresql database timed out")
         return
       }
-      cp.execSync(`psql -d postgresql://backends_u:abc@localhost/backends_test -c 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";'`)
+      cp.execSync(`psql -d ${connectionString} -c 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";'`)
     }
   } catch (error) {
     core.setFailed(error.message);
