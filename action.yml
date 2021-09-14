@@ -17,10 +17,10 @@ inputs:
     default: false
     description: "wether or not to install postgresql-client and wait for initialization"
   postgresql db:
-    description: 'POSTGRES_DB - name for the default database that is created'
+    description: 'POSTGRES_DB - name for the default database that is to be configured'
     default: "backends_test"
   postgresql user:
-    description: 'POSTGRES_USER - create the specified user with superuser power'
+    description: 'POSTGRES_USER - the user with superuser power'
     default: 'backends_u'
   postgresql password:
     description: 'POSTGRES_PASSWORD - superuser password'
