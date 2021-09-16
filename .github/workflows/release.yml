@@ -1,0 +1,17 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: zendesk/action-create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
