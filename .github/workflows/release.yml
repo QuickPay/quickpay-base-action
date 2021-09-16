@@ -1,15 +1,21 @@
-name: Create Release
+name: Release
 
-on:
-  push:
-    branches:
-      - release
+on: [workflow_dispatch]
 
 jobs:
-  build:
-    name: Create Release
+  release: 
     runs-on: "ubuntu-20.04"
     steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: build
+      - run: |1
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - run: git fetch
+      - run: git checkout release
+      - run: git merge build --allow-unrelated-histories
+      - run: git push origin release
       - name: Create Release
         id: create_release
         uses: zendesk/action-create-release@v1
