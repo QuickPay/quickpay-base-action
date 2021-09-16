@@ -9,4 +9,5 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: build
-      - run: git push --force origin release
+      - run: git checkout release
+      - run: git merge build
