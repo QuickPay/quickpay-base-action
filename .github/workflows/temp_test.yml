@@ -1,0 +1,9 @@
+on: [push]
+
+jobs:
+  test:
+    runs-on: "ubuntu-20.04"
+    steps:
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y chromium-chromedriver chromium-browser libpq-dev libcurl4-openssl-dev libxml2-dev libxslt1-dev zlib1g-dev netcat-openbsd libsasl2-dev postgresql-client
+      
