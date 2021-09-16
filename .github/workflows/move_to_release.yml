@@ -15,3 +15,4 @@ jobs:
       - run: git fetch
       - run: git checkout release
       - run: git merge build --allow-unrelated-histories
+      - run: git push origin release
