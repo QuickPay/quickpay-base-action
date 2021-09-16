@@ -3,7 +3,7 @@ This action is a collection of small things often needed in QuickPay CI, this ac
 
 ## Usage
 ```yaml
-- uses: quickPay/quickpay-base-action@v2.3
+- uses: quickPay/quickpay-base-action@release
   with:
     # a private ssh key which follows standard quickpay SSH key policy
     # this is needed for workflows that need to clone a private repo
@@ -79,6 +79,9 @@ and then you write the logic you need.
 Beware, something if you try to manipulate the file structure using nodejs `fs` binding it sometimes doesnt work,
 instead use `cp.execSync` to let bash handle it for you, this may also be the case with other system thing.
 
-Before commiting make sure you compile the project with `npm run prepare`.
+To create a release, invoke the manual action on this page called release, however make sure you do this after the automated build action has done its thing
 
 Or if youre completely lost go, come poke me (AOE) on the shoulder 
+
+## Testing
+Since the only proper way to simulate a workflow envoriment is by running one, we have a job called test in the test_and_build.yml workflow, we test by running commands that would fail if the envoriment is incorrect. This is not the most formal test suite but it does the job, if new functionally is added please add a bash command or 2 to this job to test that it works
