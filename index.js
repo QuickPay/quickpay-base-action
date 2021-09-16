@@ -16,8 +16,8 @@ async function run() {
 
     if (chrome) {
       cp.execSync(`sudo sh -c 'echo "deb http://deb.debian.org/debian buster main
-deb http://deb.debian.org/debian buster-updates main
-deb http://deb.debian.org/debian-security buster/updates main" > /etc/apt/sources.list.d/debian.list'`
+  deb http://deb.debian.org/debian buster-updates main
+  deb http://deb.debian.org/debian-security buster/updates main" > /etc/apt/sources.list.d/debian.list'`
       )
       cp.execSync(`sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DCC9EFBF77E11517 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A`)
       cp.execSync(`sudo sh -c 'echo "# Note: 2 blank lines are required between entries
@@ -48,7 +48,7 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
           "libsasl2-dev"] : [])
         .concat(postgres ? ["postgresql-client"] : [])
         .join(" ")
-      cp.execSync("sudo apt-get install -y " + aptDeps)
+      cp.execSync("DEBIAN_FRONTEND=noninteractive sudo apt-get install -y " + aptDeps)
     }
     if (sshKey) {
       cp.execSync("mkdir ~/.ssh")
