@@ -50,9 +50,11 @@ This action is a collection of small things often needed in QuickPay CI, this ac
     postgresql db: "backends_test"
 
     # the user with superuser power
+    # default is "backends_u"
     postgresql user: "backends_u"
 
     # superuser password
+    # default is "abc"
     postgresql password: "abc
 ```
 
@@ -62,7 +64,7 @@ The set of examples projects bellow here should together use all arguments this 
 - https://github.com/QuickPay/manager-server
 - https://github.com/QuickPay/payment
 
-## "I want to add something to this project, but how?"
+## Contributing
 This is a nodejs github action, meaning the actual code is javascript run in nodejs.
 action.yml is the manifest for this action and is where you wanna go for adding more arguments.
 
