@@ -48,3 +48,13 @@ jobs:
       - name: Test pgcrypto is installed
         run: psql -S -d postgresql://backends_u:abc@localhost/backends_test -c "select gen_random_uuid();"
       - run: cd klarna-payments-backend && bundle install
+  build:
+    needs: test
+    runs-on: "ubuntu-20.04"
+    steps: 
+      - uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: build
+          FOLDER: dist
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
