@@ -1,0 +1,33 @@
+name: "Wait"
+description: "Wait a designated number of milliseconds"
+inputs:
+  ssh_key:
+    description: "ssh key"
+    default: null
+  prod_apt_deps:
+    description: "wether or not to install all apt dependencies used in production envoriments"
+    default: false
+  chrome:
+    description: "wether or not to download chrome"
+    default: false
+  rubocop:
+    description: "wether or not to download rubocop"
+    default: false
+  postgres:
+    default: false
+    description: "wether or not to install postgresql-client and wait for initialization"
+  postgresql db:
+    description: 'POSTGRES_DB - name for the default database that is to be configured'
+    default: "backends_test"
+  postgresql user:
+    description: 'POSTGRES_USER - the user with superuser power'
+    default: 'backends_u'
+  postgresql password:
+    description: 'POSTGRES_PASSWORD - superuser password'
+    default: 'abc'
+  gem_server_credentials:
+    default: null
+    description: "credentials for gem server"
+runs:
+  using: 'node12'
+  main: 'index.js'
