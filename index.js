@@ -14,9 +14,13 @@ async function run() {
     const rubocop = getBool("rubocop")
     const postgres = getBool("postgres")
 
+    if (chrome) {
+      cp.execSync("wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - ")
+      cp.execSync(`sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'`)
+    }
     if (chrome || prodAptDeps || postgres) {
       cp.execSync("sudo apt-get update")
-      const aptDeps = (chrome ? ["chromium-chromedriver", "chromium-browser"] : [])
+      const aptDeps = (chrome ? ["chromium-chromedriver", "google-chrome-stable"] : [])
         .concat(prodAptDeps ? [
           "libpq-dev",
           "libcurl4-openssl-dev",
