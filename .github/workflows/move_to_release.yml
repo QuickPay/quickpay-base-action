@@ -9,14 +9,4 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: build
-          persist-credentials: false
-          fetch-depth: 0
-      - name: Commit files
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit --allow-empty -m "move to release" -a
-      - uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release
+      - run: git push --force origin release
