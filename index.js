@@ -36,7 +36,7 @@ Pin: origin "ftp.debian.org"
 Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
     }
     if (chrome || prodAptDeps || postgres) {
-      cp.execSync("sudo apt-get update")
+      cp.execSync("DEBIAN_FRONTEND=noninteractive sudo apt-get update")
       const aptDeps = (chrome ? ["chromium-chromedriver", "chromium"] : [])
         .concat(prodAptDeps ? [
           "libpq-dev",
