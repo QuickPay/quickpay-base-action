@@ -14,7 +14,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
       - run: git fetch
       - run: git checkout release
-      - run: git merge build --allow-unrelated-histories
+      - run: git merge -X theirs build --allow-unrelated-histories
       - run: git push origin release
       - name: Create Release
         id: create_release
