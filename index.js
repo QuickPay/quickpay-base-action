@@ -1,7 +1,7 @@
 const core = require('@actions/core')
 const cp = require("child_process")
 const fs = require("fs")
-const dotenv = require("dotenv")
+const env_parser = require("./env_parser")
 
 const getBool = (key) => core.getBooleanInput(key, { required: false })
 
@@ -68,7 +68,7 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
     }
     if (envVar && fs.existsSync("env") && fs.lstatSync("env").isDirectory()) {
       Object.entries(fs.readdirSync("env").reduce((obj, file) => {
-        Object.assign(obj, dotenv.parse(fs.readFileSync("env/" + file)))
+        Object.assign(obj, env_parser.parse(fs.readFileSync("env/" + file)))
       }, {})).forEach(([k, v]) => {
         core.exportVariable(k, v)
       })

@@ -55,7 +55,11 @@ This action is a collection of small things often needed in QuickPay CI, this ac
 
     # superuser password
     # default is "abc"
-    postgresql password: "abc
+    postgresql password: "abc"
+
+    # if true will load all files it can in env/ as .env files
+    # default is tre
+    set_env_var: true
 ```
 
 ## Example Projects

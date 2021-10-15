@@ -1,0 +1,57 @@
+SETTINGS="
+default: &default
+  :db_pool: &db_pool
+    :size: 1
+    :timeout: 5
+  gateway: &gateway
+    :base_uri: https://api.<%= ENV[\"USER\"] %>.devbox.quickpay.net
+  :ppro: &ppro
+    :base_uri: https://testapi.girogate.de
+  # APP_KIND
+  :service_discovery: &service_discovery
+    :ttl: 3
+    :interval: 1
+    :reader: \"tcp://33.33.33.80:22122\"
+    :writers:
+      - \"tcp://33.33.33.80:22122\"
+  :console: &console
+    :ppro:
+      <<: *ppro
+    :db_pool:
+      <<: *db_pool
+    :gateway:
+      <<: *gateway
+  :queue: &queue
+    :pid: /tmp/ppro-queue-<%= ENV[\"RACK_ENV\"] %>.pid
+    :concurrency: 4
+    :poll_interval: 0.2
+    :ppro:
+      <<: *ppro
+    :gateway:
+      <<: *gateway
+    :db_pool:
+      :timeout: 5
+      :size: 2
+  :api: &api
+    :unicorn: &unicorn
+      :port: 14250
+      :pid: /tmp/ppro-api-<%= ENV[\"RACK_ENV\"] %>.pid
+      :workers: 1
+    :gateway:
+      <<: *gateway
+    :db_pool:
+      :timeout: 5
+      :size: 2
+    :workers:
+      :max_concurrency: 1
+      :warn_threshold: 1
+    :ppro:
+      <<: *ppro
+
+development:
+  <<: *default
+
+test:
+  :api:
+    <<: *api
+"
