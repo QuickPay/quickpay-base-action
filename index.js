@@ -1,6 +1,28 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 192:
+/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+__nccwpck_require__.r(__webpack_exports__);
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   "parse": () => (/* binding */ parse)
+/* harmony export */ });
+//if you need to change this code, plz go check if the dotenv library supports multiline values between double qoutes and use that instead
+const regex = /(?<key>[a-zA-Z0-9_]+)=(?:(?<!\\)(?:"(?<value2>(?:.|\n)*?)(?<!\\)")|'?(?<value1>.*)'?)/gm
+
+const parse = (val) => {
+    let matches = val.matchAll(regex);
+    let obj = {}
+    for(const match of matches){
+        obj[match.groups.key] = (match.groups.value2 || match.groups.value1).trim()
+    }
+    return obj
+}
+
+/***/ }),
+
 /***/ 351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -572,6 +594,34 @@ module.exports = require("path");
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__nccwpck_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__nccwpck_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
@@ -582,6 +632,8 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(186)
 const cp = __nccwpck_require__(129)
+const fs = __nccwpck_require__(747)
+const env_parser = __nccwpck_require__(192)
 
 const getBool = (key) => core.getBooleanInput(key, { required: false })
 
@@ -595,6 +647,7 @@ async function run() {
     const chrome = getBool("chrome")
     const rubocop = getBool("rubocop")
     const postgres = getBool("postgres")
+    const envVar = getBool("set_env_var")
 
     if (chrome) {
       cp.execSync(`sudo sh -c 'echo "deb http://deb.debian.org/debian buster main
@@ -644,7 +697,13 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
     }
     if (rubocop) {
       cp.execSync("curl -o ./.rubocop.yml https://quickpay.github.io/development/.rubocop.yml")
-
+    }
+    if (envVar && fs.existsSync("env") && fs.lstatSync("env").isDirectory()) {
+      Object.entries(fs.readdirSync("env").reduce((obj, file) => {
+        return Object.assign(obj, env_parser.parse(fs.readFileSync("env/" + file).toString()))
+      }, {})).forEach(([k, v]) => {
+        core.exportVariable(k, v)
+      })
     }
     if (postgres) {
       const db = getString("postgresql db")
