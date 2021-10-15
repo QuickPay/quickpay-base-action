@@ -1,5 +1,7 @@
 const core = require('@actions/core')
 const cp = require("child_process")
+const fs = require("fs")
+const dotenv = require("dotenv")
 
 const getBool = (key) => core.getBooleanInput(key, { required: false })
 
@@ -13,6 +15,7 @@ async function run() {
     const chrome = getBool("chrome")
     const rubocop = getBool("rubocop")
     const postgres = getBool("postgres")
+    const envVar = getBool("set_env_var")
 
     if (chrome) {
       cp.execSync(`sudo sh -c 'echo "deb http://deb.debian.org/debian buster main
@@ -62,7 +65,13 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
     }
     if (rubocop) {
       cp.execSync("curl -o ./.rubocop.yml https://quickpay.github.io/development/.rubocop.yml")
-
+    }
+    if (envVar && fs.existsSync("env") && fs.lstatSync("env").isDirectory()) {
+      Object.entries(fs.readdirSync("env").reduce((obj, file) => {
+        Object.assign(obj, dotenv.parse(fs.readFileSync("env/" + file)))
+      }, {})).forEach(([k, v]) => {
+        core.exportVariable(k, v)
+      })
     }
     if (postgres) {
       const db = getString("postgresql db")

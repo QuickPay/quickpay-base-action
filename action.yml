@@ -28,6 +28,9 @@ inputs:
   gem_server_credentials:
     default: null
     description: "credentials for gem server"
+  set_env_var:
+    default: true
+    description: "set envorimental variables based on env files in env/ if it exists"
 runs:
   using: 'node12'
   main: 'index.js'
