@@ -68,7 +68,7 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
     }
     if (envVar && fs.existsSync("env") && fs.lstatSync("env").isDirectory()) {
       Object.entries(fs.readdirSync("env").reduce((obj, file) => {
-        Object.assign(obj, env_parser.parse(fs.readFileSync("env/" + file).toString()))
+        return Object.assign(obj, env_parser.parse(fs.readFileSync("env/" + file).toString()))
       }, {})).forEach(([k, v]) => {
         core.exportVariable(k, v)
       })
