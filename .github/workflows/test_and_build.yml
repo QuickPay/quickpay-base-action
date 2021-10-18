@@ -33,7 +33,7 @@ jobs:
       - run: git clone git@github.com:QuickPay/klarna-payments-backend.git
       - run: gem install bundler
       - run: cat .rubocop.yml
-      - run: ruby -e "require('yaml');exit 1 unless YAML.load(ENV['SETTINGS'])['default'][:db_pool][:size] == 1"
+      - run: ruby -e "require('yaml');exit 1 unless YAML.load(ENV['SETTINGS'])['default'][:service_discovery][:reader] == 'tcp://33.33.33.80:22122'"
       - name: Tests
         run: |1
           assert_eq(){
