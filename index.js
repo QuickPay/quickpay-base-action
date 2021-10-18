@@ -10,13 +10,17 @@ __nccwpck_require__.r(__webpack_exports__);
 /* harmony export */   "parse": () => (/* binding */ parse)
 /* harmony export */ });
 //if you need to change this code, plz go check if the dotenv library supports multiline values between double qoutes and use that instead
-const regex = /(?<key>[a-zA-Z0-9_]+)=(?:(?<!\\)(?:"(?<value2>(?:.|\n)*?)(?<!\\)")|'?(?<value1>.*)'?)/gm
+const regex = /(?<key>[a-zA-Z0-9_]+)=(?<value>(?<!\\)(?:"(?:(?:.|\n)*?)(?<!\\)")|'?(?:.*)'?)/gm
 
 const parse = (val) => {
     let matches = val.matchAll(regex);
     let obj = {}
     for(const match of matches){
-        obj[match.groups.key] = (match.groups.value2 || match.groups.value1).trim()
+        let result = match.groups.value.trim()
+        if(result[0] === '"' || result[0] === "'") {
+            result = JSON.parse(result.replace(/\n/gm, "\\n"))
+        }
+        obj[match.groups.key] = result
     }
     return obj
 }
