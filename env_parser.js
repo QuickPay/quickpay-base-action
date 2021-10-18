@@ -7,7 +7,7 @@ export const parse = (val) => {
     for(const match of matches){
         let result = match.groups.value.trim()
         if(result[0] === '"' || result[0] === "'") {
-            result = JSON.parse(result)
+            result = JSON.parse(result.replaceAll("\n", "\\n"))
         }
         obj[match.groups.key] = result
     }
