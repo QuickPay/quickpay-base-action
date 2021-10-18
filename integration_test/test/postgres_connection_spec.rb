@@ -2,7 +2,9 @@ require "test/helper"
 
 describe "Postgres Connection" do
     it "is reachable" do
-        _(`psql -d postgresql://backends_u:abc@localhost/backends_test -c "select 'test';"`.strip).must_equal "test"
+        result = `psql -d postgresql://backends_u:abc@localhost/backends_test -c "select 'test';"`.strip
+        _(result).must_match /\?column\?/
+        _(result).must_match /test/
     end
 
     it "has pgcrypto installed" do
