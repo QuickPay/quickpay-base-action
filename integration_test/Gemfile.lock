@@ -1,4 +1,5 @@
 GEM
+  remote: https://rubygems.org/
   specs:
     ansi (1.5.0)
     builder (3.2.4)
@@ -8,7 +9,7 @@ GEM
       builder
       minitest (>= 5.0)
       ruby-progressbar
-    rake (13.0.3)
+    rake (13.0.6)
     ruby-progressbar (1.11.0)
 
 PLATFORMS
