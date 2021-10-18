@@ -32,25 +32,8 @@ jobs:
           ruby-version: 2.7
       - run: git clone git@github.com:QuickPay/klarna-payments-backend.git
       - run: gem install bundler
-      - run: cat .rubocop.yml
-      - run: ruby -e "require('yaml');exit 1 unless YAML.load(ENV['SETTINGS'])['default'][:service_discovery][:reader] == 'tcp://33.33.33.80:22122'"
       - name: Tests
-        run: |1
-          assert_eq(){
-            exp="$1"
-            shift
-            act="$*"
-            if [[ "$act" == *"$exp"* ]]; then
-              echo "+1"
-            else
-              echo "failed test"
-              exit 1
-            fi
-          }
-
-          assert_eq "test" $(psql -d postgresql://backends_u:abc@localhost/backends_test -c "select 'test';")
-      - name: Test pgcrypto is installed
-        run: psql -S -d postgresql://backends_u:abc@localhost/backends_test -c "select gen_random_uuid();"
+        run: cd integration_test && bundle install && bundle exec rake test
       - run: cd klarna-payments-backend && bundle install
   build:
     needs: test
