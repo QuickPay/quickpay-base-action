@@ -3,6 +3,6 @@ require "test/helper"
 
 describe "Rubocop" do
     it "exists" do
-        _(File.file?("../.rubocop.yml")).must_match true
+        _(File.file?("../.rubocop.yml")).must_equal true
     end
 end
