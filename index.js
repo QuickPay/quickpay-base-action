@@ -647,6 +647,7 @@ async function run() {
   try {
     const sshKey = getString("ssh_key")
     const gemServer = getString("gem_server_credentials")
+    const gemGithub = getString("gem_github_credentials")
     const prodAptDeps = getBool("prod_apt_deps")
     const chrome = getBool("chrome")
     const rubocop = getBool("rubocop")
@@ -695,9 +696,15 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
       cp.execSync("ssh-keygen -F github.com || ssh-keyscan github.com >> ~/.ssh/known_hosts")
       cp.execSync("chmod 600 ~/.ssh/id_ed25519")
     }
-    if (gemServer) {
+    if (gemServer || gemGithub) {
       cp.execSync("mkdir ~/.bundle")
-      cp.execSync(`echo "BUNDLE_GEMS__QUICKPAY__NET: \"${gemServer}\"" > ~/.bundle/config`)
+      cp.execSync("touch ~/.bundle/config")
+    }
+    if (gemServer) {
+      cp.execSync(`echo "BUNDLE_GEMS__QUICKPAY__NET: \"${gemServer}\"\n" >> ~/.bundle/config`)
+    }
+    if (gemGithub) {
+      cp.execSync(`echo "BUNDLE_RUBYGEMS__PKG__GITHUB__COM: \"${gemGithub}\"\n" >> ~/.bundle/config`)
     }
     if (rubocop) {
       cp.execSync("curl -o ./.rubocop.yml https://quickpay.github.io/development/.rubocop.yml")
