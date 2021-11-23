@@ -36,7 +36,7 @@ This action is a collection of small things often needed in QuickPay CI, this ac
     # the credentials for the Github Packages ruby gem registry
     # this is the case for most of our modern projects
     # default is null
-    gem_github_credentials: ${{github.actor}}:${{secrets.GITHUB_TOKEN}}
+    gem_github_credentials: ${{secrets.BUNDLE_RUBYGEMS__PKG__GITHUB__COM}}
 
     # if this is true, postgresql-client is installed, we wait for the postgres server
     # to be ready and we create the pgcrypto extension on the database

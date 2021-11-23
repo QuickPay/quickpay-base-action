@@ -26,7 +26,7 @@ jobs:
           rubocop: true 
           postgres: true
           gem_server_credentials: "${{secrets.BUNDLE_GEMS__QUICKPAY__NET}}"
-          gem_github_credentials: ${{github.actor}}:${{secrets.GITHUB_TOKEN}}
+          gem_github_credentials: ${{secrets.BUNDLE_RUBYGEMS__PKG__GITHUB__COM}}
           set_env_var: true
       - uses: ruby/setup-ruby@v1
         with: 

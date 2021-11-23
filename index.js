@@ -68,16 +68,7 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
       cp.execSync(`echo "BUNDLE_GEMS__QUICKPAY__NET: \"${gemServer}\"\n" >> ~/.bundle/config`)
     }
     if (gemGithub) {
-      cp.execSync(`echo ':backtrace: false
-:bulk_threshold: 1000
-:sources:
-- https://rubygems.org/
-- https://${gemGithub}@rubygems.pkg.github.com/QuickPay/
-:update_sources: true
-:verbose: true
-' > ~/.gemrc`)
-      cp.execSync(`echo ":github: Bearer \"${gemGithub.split(":")[1]}\""`)
-      cp.execSync(`echo "BUNDLE_HTTPS://RUBYGEMS__PKG__GITHUB__COM/QUICKPAY/: \"${gemGithub}\"\n" >> ~/.bundle/config`)
+      cp.execSync(`echo "BUNDLE_RUBYGEMS__PKG__GITHUB__COM: \"${gemGithub}\"\n" >> ~/.bundle/config`)
     }
     if (rubocop) {
       cp.execSync("curl -o ./.rubocop.yml https://quickpay.github.io/development/.rubocop.yml")
