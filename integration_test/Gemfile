@@ -3,3 +3,11 @@ source "https://rubygems.org"
 gem "minitest"
 gem "rake"
 gem "minitest-reporters"
+
+source "https://gems.quickpay.net" do
+    gem "quickpay-stock"
+end
+
+source "https://rubygems.pkg.github.com/QuickPay" do 
+    gem "stock"
+end 
