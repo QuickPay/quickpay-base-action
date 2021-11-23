@@ -28,6 +28,9 @@ inputs:
   gem_server_credentials:
     default: null
     description: "credentials for gem server"
+  gem_github_credentials:
+    default: null
+    description: "credentials for gem github packages"
   set_env_var:
     default: true
     description: "set envorimental variables based on env files in env/ if it exists"
