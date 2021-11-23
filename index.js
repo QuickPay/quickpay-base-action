@@ -68,6 +68,7 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
       cp.execSync(`echo "BUNDLE_GEMS__QUICKPAY__NET: \"${gemServer}\"\n" >> ~/.bundle/config`)
     }
     if (gemGithub) {
+      cp.execSync(`echo ":github: Bearer \"${gemGithub.split(":")[1]}\""`)
       cp.execSync(`echo "BUNDLE_HTTPS://RUBYGEMS__PKG__GITHUB__COM/QUICKPAY/: \"${gemGithub}\"\n" >> ~/.bundle/config`)
     }
     if (rubocop) {
