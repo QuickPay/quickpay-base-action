@@ -2,7 +2,6 @@ const core = require('@actions/core')
 const cp = require("child_process")
 const fs = require("fs")
 const env_parser = require("./env_parser")
-const fetch = require("node-fetch")
 const { GENERATE_ULID } = require("./generate_ulid_func")
 
 const getBool = (key) => core.getBooleanInput(key, { required: false })
