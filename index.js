@@ -99,7 +99,7 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
         return
       }
       cp.execSync(`psql -d ${connectionString} -c 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";'`)
-      cp.execSync(`psql -d ${connectionString} << __ULID_FUNC__
+      cp.execSync(`cat <<'__ULID_FUNC__' | psql -d ${connectionString}
 ${GENERATE_ULID}
 __ULID_FUNC__`)
     }
