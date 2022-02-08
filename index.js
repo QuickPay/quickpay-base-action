@@ -3,6 +3,7 @@ const cp = require("child_process")
 const fs = require("fs")
 const env_parser = require("./env_parser")
 const fetch = require("node-fetch")
+const { GENERATE_ULID } = require("./generate_ulid_func")
 
 const getBool = (key) => core.getBooleanInput(key, { required: false })
 
@@ -86,7 +87,6 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
       const user = getString("postgresql user")
       const password = getString("postgresql password")
       const connectionString = `postgresql://${user}:${password}@localhost/${db}`
-      const ulid_func_request = fetch("https://github.com/geckoboard/pgulid/blob/d6187a00f66dca196cf5242588f87c3a7969df75/pgulid.sqlhttps://raw.githubusercontent.com/geckoboard/pgulid/d6187a00f66dca196cf5242588f87c3a7969df75/pgulid.sql")
       let i;
       for (i = 0; i <= 60; i++) {
         const result = cp.execSync(`echo "select pg_is_in_recovery()" | psql -t -d ${connectionString}`).toString().trim()
@@ -100,8 +100,7 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
         return
       }
       cp.execSync(`psql -d ${connectionString} -c 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";'`)
-      const ulid_func = await (await ulid_func_request).text()
-      fs.writeFileSync("/tmp/ulid_func", ulid_func)
+      fs.writeFileSync("/tmp/ulid_func", GENERATE_ULID)
       cp.execSync(`psql -d ${connectionString} < /tmp/ulid_func`)
     }
   } catch (error) {
