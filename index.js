@@ -85,7 +85,8 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
       const db = getString("postgresql db")
       const user = getString("postgresql user")
       const password = getString("postgresql password")
-      const connectionString = `postgresql://${user}:${password}@localhost/${db}`
+      const port = getString("postgresql port")
+      const connectionString = `postgresql://${user}:${password}@localhost:${port}/${db}`
       let i;
       for (i = 0; i <= 60; i++) {
         const result = cp.execSync(`echo "select pg_is_in_recovery()" | psql -t -d ${connectionString}`).toString().trim()
