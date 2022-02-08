@@ -35,25 +35,9 @@ __nccwpck_require__.r(__webpack_exports__);
 /* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
 /* harmony export */   "GENERATE_ULID": () => (/* binding */ GENERATE_ULID)
 /* harmony export */ });
-const GENERATE_ULID = `-- pgulid is based on OK Log's Go implementation of the ULID spec
+const GENERATE_ULID = `-- Managed by Ansible - {{ role_name }}
 --
--- https://github.com/oklog/ulid
--- https://github.com/ulid/spec
---
--- Copyright 2016 The Oklog Authors
--- Licensed under the Apache License, Version 2.0 (the "License");
--- you may not use this file except in compliance with the License.
--- You may obtain a copy of the License at
---
--- http://www.apache.org/licenses/LICENSE-2.0
---
--- Unless required by applicable law or agreed to in writing, software
--- distributed under the License is distributed on an "AS IS" BASIS,
--- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
--- See the License for the specific language governing permissions and
--- limitations under the License.
-
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- https://github.com/geckoboard/pgulid/blob/d6187a00f66dca196cf5242588f87c3a7969df75/pgulid.sql
 
 CREATE FUNCTION generate_ulid()
 RETURNS TEXT
@@ -61,7 +45,7 @@ AS $$
 DECLARE
   -- Crockford's Base32
   encoding   BYTEA = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
-  timestamp  BYTEA = E'\\000\\000\\000\\000\\000\\000';
+  timestamp  BYTEA = E'\\\\000\\\\000\\\\000\\\\000\\\\000\\\\000';
   output     TEXT = '';
 
   unix_time  BIGINT;
@@ -826,8 +810,8 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
         return
       }
       cp.execSync(`psql -d ${connectionString} -c 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";'`)
-      fs.writeFileSync("/tmp/ulid_func", GENERATE_ULID)
-      cp.execSync(`psql -d ${connectionString} < /tmp/ulid_func`)
+      fs.writeFileSync("/tmp/ulid_func.sql", GENERATE_ULID)
+      cp.execSync(`psql -d ${connectionString} < /tmp/ulid_func.sql`)
     }
   } catch (error) {
     core.setFailed(error.message);
