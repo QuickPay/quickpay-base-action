@@ -25,6 +25,9 @@ inputs:
   postgresql password:
     description: 'POSTGRES_PASSWORD - superuser password'
     default: 'abc'
+  postgresql port:
+    description: "port which the postgresql service is running on"
+    default: 5432
   gem_server_credentials:
     default: null
     description: "credentials for gem server"
