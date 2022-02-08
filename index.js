@@ -2,6 +2,7 @@ const core = require('@actions/core')
 const cp = require("child_process")
 const fs = require("fs")
 const env_parser = require("./env_parser")
+const { GENERATE_ULID } = require("./generate_ulid_func")
 
 const getBool = (key) => core.getBooleanInput(key, { required: false })
 
@@ -98,6 +99,8 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
         return
       }
       cp.execSync(`psql -d ${connectionString} -c 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";'`)
+      fs.writeFileSync("/tmp/ulid_func", GENERATE_ULID)
+      cp.execSync(`psql -d ${connectionString} < /tmp/ulid_func`)
     }
   } catch (error) {
     core.setFailed(error.message);
