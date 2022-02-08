@@ -99,9 +99,8 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
         return
       }
       cp.execSync(`psql -d ${connectionString} -c 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";'`)
-      cp.execSync(`cat <<- __ULID_FUNC__ | psql -d ${connectionString}
-${GENERATE_ULID}
-__ULID_FUNC__`)
+      fs.writeFileSync("/tmp/ulid_func.sql", GENERATE_ULID)
+      cp.execSync(`psql -d ${connectionString} < /tmp/ulid_func.sql`)
     }
   } catch (error) {
     core.setFailed(error.message);
