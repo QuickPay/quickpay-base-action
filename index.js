@@ -86,7 +86,7 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
       const user = getString("postgresql user")
       const password = getString("postgresql password")
       const connectionString = `postgresql://${user}:${password}@localhost/${db}`
-      const ulid_func_request = fetch("https://github.com/geckoboard/pgulid/blob/d6187a00f66dca196cf5242588f87c3a7969df75/pgulid.sql")
+      const ulid_func_request = fetch("https://github.com/geckoboard/pgulid/blob/d6187a00f66dca196cf5242588f87c3a7969df75/pgulid.sqlhttps://raw.githubusercontent.com/geckoboard/pgulid/d6187a00f66dca196cf5242588f87c3a7969df75/pgulid.sql")
       let i;
       for (i = 0; i <= 60; i++) {
         const result = cp.execSync(`echo "select pg_is_in_recovery()" | psql -t -d ${connectionString}`).toString().trim()
