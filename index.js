@@ -810,7 +810,10 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
         core.setFailed("postgresql database timed out")
         return
       }
-      cp.execSync(`psql -d ${connectionString} -c 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";'`)
+      const extensions = ["pgcrypto", "uuid-ossp"]
+      extensions.forEach(x => {
+           cp.execSync(`psql -d ${connectionString} -c 'CREATE EXTENSION IF NOT EXISTS "${x}";'`)
+      })
       fs.writeFileSync("/tmp/ulid_func.sql", GENERATE_ULID)
       cp.execSync(`psql -d ${connectionString} < /tmp/ulid_func.sql`)
     }
