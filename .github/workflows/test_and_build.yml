@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   test:
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     env:
       RACK_ENV: test
       PG_HOST: localhost
@@ -23,13 +23,13 @@ jobs:
           ssh_key: "${{secrets.SSH_KEY_GITHUB}}"
           prod_apt_deps: true
           chrome: true
-          rubocop: true 
+          rubocop: true
           postgres: true
           gem_server_credentials: "${{secrets.BUNDLE_GEMS__QUICKPAY__NET}}"
           gem_github_credentials: ${{secrets.BUNDLE_RUBYGEMS__PKG__GITHUB__COM}}
           set_env_var: true
       - uses: ruby/setup-ruby@v1
-        with: 
+        with:
           ruby-version: 2.7
       - run: git clone git@github.com:QuickPay/klarna-payments-backend.git
       - run: gem install bundler
@@ -39,7 +39,7 @@ jobs:
   build:
     needs: test
     runs-on: "ubuntu-20.04"
-    steps: 
+    steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
