@@ -36,27 +36,10 @@ jobs:
       - name: Tests
         run: cd integration_test && bundle install && bundle exec rake test
       - run: cd klarna-payments-backend && bundle install
-      - name: Setup Git for publishing
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      - name: Create and switch to build branch
-        run: |
-          echo "Checking if build branch exists..."
-          git fetch origin build:build || echo "Build branch doesn't exist yet, will create it"
-          git checkout -B build
-      - name: Clean working directory except .git and dist
-        run: |
-          find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name 'dist' -exec rm -rf {} +
-          cp -r dist/* .
-          rm -rf dist
-      - name: Commit and push to build branch
-        run: |
-          echo "Adding files to git..."
-          git add .
-          echo "Committing changes..."
-          git commit -m "Build from commit ${{ github.sha }}" || echo "No changes to commit"
-          echo "Pushing to build branch (force)..."
-          git push origin build --force
+
+      - uses: s0/git-publish-subdir-action@develop
         env:
+          REPO: self
+          BRANCH: build
+          FOLDER: dist
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
