@@ -3,8 +3,8 @@ name: Test and Build
 on: [push]
 
 jobs:
-  test:
-    runs-on: "ubuntu-20.04"
+  test_build:
+    runs-on: "ubuntu-22.04"
     env:
       RACK_ENV: test
       PG_HOST: localhost
@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: quickpay/postgresql-action@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
           node-version: "12"
           cache: "npm"
@@ -23,29 +23,20 @@ jobs:
           ssh_key: "${{secrets.SSH_KEY_GITHUB}}"
           prod_apt_deps: true
           chrome: true
-          rubocop: true 
+          rubocop: true
           postgres: true
           gem_server_credentials: "${{secrets.BUNDLE_GEMS__QUICKPAY__NET}}"
           gem_github_credentials: ${{secrets.BUNDLE_RUBYGEMS__PKG__GITHUB__COM}}
           set_env_var: true
       - uses: ruby/setup-ruby@v1
-        with: 
+        with:
           ruby-version: 2.7
       - run: git clone git@github.com:QuickPay/klarna-payments-backend.git
-      - run: gem install bundler
+      - run: gem install bundler -v 2.4.22
       - name: Tests
         run: cd integration_test && bundle install && bundle exec rake test
       - run: cd klarna-payments-backend && bundle install
-  build:
-    needs: test
-    runs-on: "ubuntu-20.04"
-    steps: 
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "12"
-          cache: "npm"
-      - run: npm install && npm run build
+
       - uses: s0/git-publish-subdir-action@develop
         env:
           REPO: self
