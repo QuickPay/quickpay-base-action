@@ -731,29 +731,40 @@ async function run() {
     const envVar = getBool("set_env_var")
 
     if (chrome) {
-      cp.execSync(`sudo sh -c 'echo "deb http://deb.debian.org/debian buster main
-  deb http://deb.debian.org/debian buster-updates main
-  deb http://deb.debian.org/debian-security buster/updates main" > /etc/apt/sources.list.d/debian.list'`
-      )
-      cp.execSync(`sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DCC9EFBF77E11517 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A`)
-      cp.execSync(`sudo sh -c 'echo "# Note: 2 blank lines are required between entries
-Package: *
-Pin: release a=eoan
-Pin-Priority: 500
+      // Install Chrome
+      cp.execSync('wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb')
+      cp.execSync('sudo apt-get install -y ./google-chrome-stable_current_amd64.deb')
 
-Package: *
-Pin: origin "ftp.debian.org"
-Pin-Priority: 300
+      try {
+        const chromeVersionOutput = cp.execSync('google-chrome --version').toString()
+        console.log('Chrome version output:', chromeVersionOutput)
 
-# Pattern includes 'chromium', 'chromium-browser' and similarly
-# named dependencies:
-Package: chromium*
-Pin: origin "ftp.debian.org"
-Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
+        const chromeVersionMatch = chromeVersionOutput.match(/\d+\.\d+\.\d+\.\d+/)
+        if (!chromeVersionMatch) {
+          throw new Error('Could not extract Chrome version from: ' + chromeVersionOutput)
+        }
+        const chromeVersion = chromeVersionMatch[0]
+        console.log('Chrome version:', chromeVersion)
+
+        const chromedriverUrl = `https://storage.googleapis.com/chrome-for-testing-public/${chromeVersion}/linux64/chromedriver-linux64.zip`
+        console.log('Downloading chromedriver from:', chromedriverUrl)
+
+        cp.execSync(`wget -q -O chromedriver.zip "${chromedriverUrl}"`)
+        cp.execSync('unzip -q chromedriver.zip')
+        cp.execSync('sudo mv chromedriver-linux64/chromedriver /usr/local/bin/')
+        cp.execSync('sudo chmod +x /usr/local/bin/chromedriver')
+
+        cp.execSync('rm -rf chromedriver.zip chromedriver-linux64 google-chrome-stable_current_amd64.deb')
+
+        console.log('Chromedriver installed successfully')
+      } catch (error) {
+        core.setFailed('Failed to install Chromedriver: ' + error.message)
+        return
+      }
     }
     if (chrome || prodAptDeps || postgres) {
       cp.execSync("DEBIAN_FRONTEND=noninteractive sudo apt-get update")
-      const aptDeps = (chrome ? ["chromium-chromedriver", "chromium"] : [])
+      const aptDeps = []
         .concat(prodAptDeps ? [
           "libpq-dev",
           "libcurl4-openssl-dev",
@@ -764,7 +775,9 @@ Pin-Priority: 700" > /etc/apt/preferences.d/chromium.pref'`)
           "libsasl2-dev"] : [])
         .concat(postgres ? ["postgresql-client"] : [])
         .join(" ")
-      cp.execSync("DEBIAN_FRONTEND=noninteractive sudo apt-get install -y " + aptDeps)
+      if (aptDeps.length > 0) {
+        cp.execSync("DEBIAN_FRONTEND=noninteractive sudo apt-get install -y " + aptDeps)
+      }
     }
     if (sshKey) {
       cp.execSync("mkdir ~/.ssh")
