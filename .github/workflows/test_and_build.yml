@@ -36,24 +36,29 @@ jobs:
       - name: Tests
         run: cd integration_test && bundle install && bundle exec rake test
       - run: cd klarna-payments-backend && bundle install
-  build:
-    needs: test
-    runs-on: "ubuntu-20.04"
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "12"
-          cache: "npm"
-      - name: Install and build with verbose logging
+      - name: Setup Git for publishing
         run: |
-          echo "Starting npm install..."
-          npm install --verbose
-          echo "Starting npm build..."
-          npm run build --verbose
-      - uses: s0/git-publish-subdir-action@develop
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Create and switch to build branch
+        run: |
+          echo "Checking if build branch exists..."
+          git fetch origin build:build || echo "Build branch doesn't exist yet, will create it"
+          git checkout -B build
+      - name: Clear build branch and copy dist contents
+        run: |
+          echo "Clearing current build branch contents..."
+          git rm -rf . || echo "No files to remove"
+          echo "Copying dist contents to root..."
+          cp -r dist/* . || echo "No files in dist to copy"
+          ls -la
+      - name: Commit and push to build branch
+        run: |
+          echo "Adding files to git..."
+          git add .
+          echo "Committing changes..."
+          git commit -m "Build from commit ${{ github.sha }}" || echo "No changes to commit"
+          echo "Pushing to build branch..."
+          git push origin build
         env:
-          REPO: self
-          BRANCH: build
-          FOLDER: dist
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
