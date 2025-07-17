@@ -45,20 +45,18 @@ jobs:
           echo "Checking if build branch exists..."
           git fetch origin build:build || echo "Build branch doesn't exist yet, will create it"
           git checkout -B build
-      - name: Clear build branch and copy dist contents
+      - name: Clean working directory except .git and dist
         run: |
-          echo "Clearing current build branch contents..."
-          git rm -rf . || echo "No files to remove"
-          echo "Copying dist contents to root..."
-          cp -r dist/* . || echo "No files in dist to copy"
-          ls -la
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name 'dist' -exec rm -rf {} +
+          cp -r dist/* .
+          rm -rf dist
       - name: Commit and push to build branch
         run: |
           echo "Adding files to git..."
           git add .
           echo "Committing changes..."
           git commit -m "Build from commit ${{ github.sha }}" || echo "No changes to commit"
-          echo "Pushing to build branch..."
-          git push origin build
+          echo "Pushing to build branch (force)..."
+          git push origin build --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
