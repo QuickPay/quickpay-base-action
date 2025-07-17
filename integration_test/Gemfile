@@ -4,10 +4,6 @@ gem "minitest"
 gem "rake"
 gem "minitest-reporters"
 
-source "https://gems.quickpay.net" do
-    gem "quickpay-stock"
-end
-
-source "https://rubygems.pkg.github.com/QuickPay" do 
+source "https://rubygems.pkg.github.com/QuickPay" do
     gem "stock", "~> 3.0.0"
 end 

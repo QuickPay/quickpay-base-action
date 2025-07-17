@@ -1,6 +1,5 @@
 GEM
   remote: https://rubygems.org/
-  remote: https://gems.quickpay.net/
   remote: https://rubygems.pkg.github.com/QuickPay/
   specs:
     ansi (1.5.0)
@@ -59,11 +58,6 @@ GEM
     quickpay-ruby-client (3.0.2)
       excon (>= 0.79)
       json (~> 2, >= 2.5)
-    quickpay-stock (3.0.2)
-      dry-struct (~> 1.4.0)
-      dry-types (~> 1.5.1)
-      dry-validation (~> 1.6.0)
-      quickpay-ruby-client (~> 3.0.0)
     rake (13.0.6)
     ruby-progressbar (1.11.0)
     stock (3.0.2)
@@ -80,7 +74,6 @@ PLATFORMS
 DEPENDENCIES
   minitest
   minitest-reporters
-  quickpay-stock!
   rake
   stock (~> 3.0.0)!
 
