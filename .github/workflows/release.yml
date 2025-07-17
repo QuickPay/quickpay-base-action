@@ -6,16 +6,28 @@ jobs:
   release:
     runs-on: "ubuntu-22.04"
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout build branch
+        uses: actions/checkout@v3
         with:
           ref: build
-      - run: |1
+
+      - name: Configure Git
+        run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-      - run: git fetch
-      - run: git checkout release
-      - run: git merge -X theirs build --allow-unrelated-histories
-      - run: git push origin release
+
+      - name: Fetch all branches
+        run: git fetch
+
+      - name: Checkout release branch
+        run: git checkout release
+
+      - name: Merge build into release
+        run: git merge -X theirs build --allow-unrelated-histories
+
+      - name: Push to release
+        run: git push origin release
+
       - name: Create Release
         id: create_release
         uses: zendesk/action-create-release@v1
@@ -23,4 +35,6 @@ jobs:
           tag_schema: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "Released ${{steps.create_release.outputs.current_tag}}"
+
+      - name: Output Tag
+        run: echo "Released ${{ steps.create_release.outputs.current_tag }}"

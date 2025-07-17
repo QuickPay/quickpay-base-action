@@ -3,7 +3,7 @@ name: Test and Build
 on: [push]
 
 jobs:
-  test:
+  test_build:
     runs-on: "ubuntu-22.04"
     env:
       RACK_ENV: test
