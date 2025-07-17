@@ -20,10 +20,10 @@ async function run() {
     const envVar = getBool("set_env_var")
 
     if (chrome) {
-      cp.execSync(`sudo sh -c 'echo "deb http://archive.debian.org/debian buster main\ndeb http://archive.debian.org/debian-security buster/updates main" > /etc/apt/sources.list.d/debian.list'`);
-
-      cp.execSync(`sudo sh -c 'echo "Acquire::Check-Valid-Until \\"false\\";" > /etc/apt/apt.conf.d/99no-check-valid-until'`);
-      cp.execSync(`sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DCC9EFBF77E11517 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A`)
+      cp.execSync(`sudo sh -c 'echo "deb http://deb.debian.org/debian bullseye main
+        deb http://deb.debian.org/debian bullseye-updates main
+        deb http://security.debian.org/debian-security bullseye-security main" > /etc/apt/sources.list.d/debian.list'`)
+      cp.execSync(`sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DCC9EFBF77E11517 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 54404762BBB6E853 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys BDE6D2B9216EC7A8 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0E98404D386FA1D9 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6ED0E7B82643E131 && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 605C66F00D6C9793`);
       cp.execSync(`sudo sh -c 'echo "# Note: 2 blank lines are required between entries
 Package: *
 Pin: release a=eoan
