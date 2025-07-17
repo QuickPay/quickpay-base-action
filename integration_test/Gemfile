@@ -1,9 +1,0 @@
-source "https://rubygems.org"
-
-gem "minitest"
-gem "rake"
-gem "minitest-reporters"
-
-source "https://rubygems.pkg.github.com/QuickPay" do
-    gem "stock", "~> 3.0.0"
-end 
