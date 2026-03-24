@@ -34,53 +34,20 @@ async function run() {
         }
 
         const chromeVersion = chromeVersionMatch[0]
-        const versionPrefix = chromeVersion.split('.').slice(0, 3).join('.') // ✅ FIXED
         console.log('Chrome version:', chromeVersion)
-        console.log('Version prefix:', versionPrefix)
 
-        let chromedriverUrl = `https://storage.googleapis.com/chrome-for-testing-public/${chromeVersion}/linux64/chromedriver-linux64.zip`
+        const chromedriverUrl = `https://storage.googleapis.com/chrome-for-testing-public/${chromeVersion}/linux64/chromedriver-linux64.zip`
         console.log('Downloading chromedriver from:', chromedriverUrl)
 
         try {
-          // Try exact version first
           cp.execSync(`wget -q -O chromedriver.zip "${chromedriverUrl}"`)
-        } catch (_exactVersionError) {
-          console.log(`Exact version ${chromeVersion} not found, falling back to matching build ${versionPrefix}...`)
-
-          cp.execSync(
-            'wget -q -O /tmp/chromedriver-versions.json "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"'
-          )
-
-          const versionsData = JSON.parse(fs.readFileSync('/tmp/chromedriver-versions.json', 'utf8'))
-
-
-          const matchingVersions = versionsData.versions.filter(v =>
-            v.version.startsWith(versionPrefix) &&
-            v.downloads.chromedriver &&
-            v.downloads.chromedriver.some(d => d.platform === 'linux64')
-          )
-
-          if (matchingVersions.length === 0) {
-            throw new Error(`No chromedriver found for Chrome build ${versionPrefix}`)
-          }
-
-
-          matchingVersions.sort((a, b) =>
-            a.version.localeCompare(b.version, undefined, { numeric: true })
-          )
-
-          const fallbackVersion = matchingVersions.pop()
-          const fallbackDownload = fallbackVersion.downloads.chromedriver.find(
-            d => d.platform === 'linux64'
-          )
-
-          chromedriverUrl = fallbackDownload.url
-
-          console.log(
-            `Falling back to chromedriver version ${fallbackVersion.version}, downloading from: ${chromedriverUrl}`
-          )
-
-          cp.execSync(`wget -q -O chromedriver.zip "${chromedriverUrl}"`)
+        } catch (_e) {
+          const versionPrefix = chromeVersion.split('.').slice(0, 3).join('.')
+          cp.execSync('wget -q -O /tmp/chromedriver-versions.json "https://googlechromelabs.github.io/chrome-for-testing/latest-patch-versions-per-build-with-downloads.json"')
+          const builds = JSON.parse(fs.readFileSync('/tmp/chromedriver-versions.json', 'utf8')).builds
+          const fallbackUrl = builds[versionPrefix].downloads.chromedriver.find(d => d.platform === 'linux64').url
+          console.log('Falling back to chromedriver:', fallbackUrl)
+          cp.execSync(`wget -q -O chromedriver.zip "${fallbackUrl}"`)
         }
 
         cp.execSync('unzip -q chromedriver.zip')
