@@ -743,13 +743,24 @@ async function run() {
         if (!chromeVersionMatch) {
           throw new Error('Could not extract Chrome version from: ' + chromeVersionOutput)
         }
+
         const chromeVersion = chromeVersionMatch[0]
         console.log('Chrome version:', chromeVersion)
 
         const chromedriverUrl = `https://storage.googleapis.com/chrome-for-testing-public/${chromeVersion}/linux64/chromedriver-linux64.zip`
         console.log('Downloading chromedriver from:', chromedriverUrl)
 
-        cp.execSync(`wget -q -O chromedriver.zip "${chromedriverUrl}"`)
+        try {
+          cp.execSync(`wget -q -O chromedriver.zip "${chromedriverUrl}"`)
+        } catch (_e) {
+          const versionPrefix = chromeVersion.split('.').slice(0, 3).join('.')
+          cp.execSync('wget -q -O /tmp/chromedriver-versions.json "https://googlechromelabs.github.io/chrome-for-testing/latest-patch-versions-per-build-with-downloads.json"')
+          const builds = JSON.parse(fs.readFileSync('/tmp/chromedriver-versions.json', 'utf8')).builds
+          const fallbackUrl = builds[versionPrefix].downloads.chromedriver.find(d => d.platform === 'linux64').url
+          console.log('Falling back to chromedriver:', fallbackUrl)
+          cp.execSync(`wget -q -O chromedriver.zip "${fallbackUrl}"`)
+        }
+
         cp.execSync('unzip -q chromedriver.zip')
         cp.execSync('sudo mv chromedriver-linux64/chromedriver /usr/local/bin/')
         cp.execSync('sudo chmod +x /usr/local/bin/chromedriver')
