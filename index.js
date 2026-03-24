@@ -32,13 +32,57 @@ async function run() {
         if (!chromeVersionMatch) {
           throw new Error('Could not extract Chrome version from: ' + chromeVersionOutput)
         }
-        const chromeVersion = chromeVersionMatch[0]
-        console.log('Chrome version:', chromeVersion)
 
-        const chromedriverUrl = `https://storage.googleapis.com/chrome-for-testing-public/${chromeVersion}/linux64/chromedriver-linux64.zip`
+        const chromeVersion = chromeVersionMatch[0]
+        const versionPrefix = chromeVersion.split('.').slice(0, 3).join('.') // ✅ FIXED
+        console.log('Chrome version:', chromeVersion)
+        console.log('Version prefix:', versionPrefix)
+
+        let chromedriverUrl = `https://storage.googleapis.com/chrome-for-testing-public/${chromeVersion}/linux64/chromedriver-linux64.zip`
         console.log('Downloading chromedriver from:', chromedriverUrl)
 
-        cp.execSync(`wget -q -O chromedriver.zip "${chromedriverUrl}"`)
+        try {
+          // Try exact version first
+          cp.execSync(`wget -q -O chromedriver.zip "${chromedriverUrl}"`)
+        } catch (_exactVersionError) {
+          console.log(`Exact version ${chromeVersion} not found, falling back to matching build ${versionPrefix}...`)
+
+          cp.execSync(
+            'wget -q -O /tmp/chromedriver-versions.json "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"'
+          )
+
+          const versionsData = JSON.parse(fs.readFileSync('/tmp/chromedriver-versions.json', 'utf8'))
+
+
+          const matchingVersions = versionsData.versions.filter(v =>
+            v.version.startsWith(versionPrefix) &&
+            v.downloads.chromedriver &&
+            v.downloads.chromedriver.some(d => d.platform === 'linux64')
+          )
+
+          if (matchingVersions.length === 0) {
+            throw new Error(`No chromedriver found for Chrome build ${versionPrefix}`)
+          }
+
+
+          matchingVersions.sort((a, b) =>
+            a.version.localeCompare(b.version, undefined, { numeric: true })
+          )
+
+          const fallbackVersion = matchingVersions.pop()
+          const fallbackDownload = fallbackVersion.downloads.chromedriver.find(
+            d => d.platform === 'linux64'
+          )
+
+          chromedriverUrl = fallbackDownload.url
+
+          console.log(
+            `Falling back to chromedriver version ${fallbackVersion.version}, downloading from: ${chromedriverUrl}`
+          )
+
+          cp.execSync(`wget -q -O chromedriver.zip "${chromedriverUrl}"`)
+        }
+
         cp.execSync('unzip -q chromedriver.zip')
         cp.execSync('sudo mv chromedriver-linux64/chromedriver /usr/local/bin/')
         cp.execSync('sudo chmod +x /usr/local/bin/chromedriver')
