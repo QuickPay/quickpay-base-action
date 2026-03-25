@@ -732,16 +732,19 @@ async function run() {
 
     if (chrome) {
       cp.execSync('wget -q -O /tmp/chrome-versions.json "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json"')
-      const downloads = JSON.parse(fs.readFileSync('/tmp/chrome-versions.json', 'utf8')).channels.Stable.downloads
+      const stableChannel = JSON.parse(fs.readFileSync('/tmp/chrome-versions.json', 'utf8')).channels.Stable
+      const downloads = stableChannel.downloads
 
       const chromeUrl = downloads.chrome.find(d => d.platform === 'linux64').url
       const chromedriverUrl = downloads.chromedriver.find(d => d.platform === 'linux64').url
 
+      console.log(`Downloading Chrome version: ${stableChannel.version}`)
       cp.execSync(`wget -q -O /tmp/chrome-linux64.zip "${chromeUrl}"`)
       cp.execSync('unzip -q /tmp/chrome-linux64.zip -d /tmp/chrome-linux64')
       cp.execSync('sudo mv /tmp/chrome-linux64/chrome-linux64/chrome /usr/local/bin/google-chrome')
       cp.execSync('sudo chmod +x /usr/local/bin/google-chrome')
 
+      console.log(`Downloading Chromedriver version: ${stableChannel.version}`)
       cp.execSync(`wget -q -O /tmp/chromedriver-linux64.zip "${chromedriverUrl}"`)
       cp.execSync('unzip -q /tmp/chromedriver-linux64.zip -d /tmp/chromedriver-linux64')
       cp.execSync('sudo mv /tmp/chromedriver-linux64/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver')
