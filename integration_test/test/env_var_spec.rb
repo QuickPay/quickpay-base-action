@@ -7,6 +7,6 @@ describe "Envorimental Variable loaded" do
     end
 
     it "has correct values" do
-        _(YAML.load(ENV["SETTINGS"])["default"][:service_discovery][:reader]).must_equal "tcp://33.33.33.80:22122"
+        _(YAML.load(ENV["SETTINGS"], aliases: true)["default"][:service_discovery][:reader]).must_equal "tcp://33.33.33.80:22122"
     end
 end
