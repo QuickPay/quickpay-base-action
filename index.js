@@ -20,47 +20,24 @@ async function run() {
     const envVar = getBool("set_env_var")
 
     if (chrome) {
-      // Install Chrome
-      cp.execSync('wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb')
-      cp.execSync('sudo apt-get install -y ./google-chrome-stable_current_amd64.deb')
+      cp.execSync('wget -q -O /tmp/chrome-versions.json "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json"')
+      const stableChannel = JSON.parse(fs.readFileSync('/tmp/chrome-versions.json', 'utf8')).channels.Stable
+      const downloads = stableChannel.downloads
 
-      try {
-        const chromeVersionOutput = cp.execSync('google-chrome --version').toString()
-        console.log('Chrome version output:', chromeVersionOutput)
+      const chromeUrl = downloads.chrome.find(d => d.platform === 'linux64').url
+      const chromedriverUrl = downloads.chromedriver.find(d => d.platform === 'linux64').url
 
-        const chromeVersionMatch = chromeVersionOutput.match(/\d+\.\d+\.\d+\.\d+/)
-        if (!chromeVersionMatch) {
-          throw new Error('Could not extract Chrome version from: ' + chromeVersionOutput)
-        }
+      console.log(`Downloading Chrome version: ${stableChannel.version}`)
+      cp.execSync(`wget -q -O /tmp/chrome-linux64.zip "${chromeUrl}"`)
+      cp.execSync('unzip -q /tmp/chrome-linux64.zip -d /tmp/chrome-linux64')
+      cp.execSync('sudo mv /tmp/chrome-linux64/chrome-linux64/chrome /usr/local/bin/google-chrome')
+      cp.execSync('sudo chmod +x /usr/local/bin/google-chrome')
 
-        const chromeVersion = chromeVersionMatch[0]
-        console.log('Chrome version:', chromeVersion)
-
-        const chromedriverUrl = `https://storage.googleapis.com/chrome-for-testing-public/${chromeVersion}/linux64/chromedriver-linux64.zip`
-        console.log('Downloading chromedriver from:', chromedriverUrl)
-
-        try {
-          cp.execSync(`wget -q -O chromedriver.zip "${chromedriverUrl}"`)
-        } catch (_e) {
-          const versionPrefix = chromeVersion.split('.').slice(0, 3).join('.')
-          cp.execSync('wget -q -O /tmp/chromedriver-versions.json "https://googlechromelabs.github.io/chrome-for-testing/latest-patch-versions-per-build-with-downloads.json"')
-          const builds = JSON.parse(fs.readFileSync('/tmp/chromedriver-versions.json', 'utf8')).builds
-          const fallbackUrl = builds[versionPrefix].downloads.chromedriver.find(d => d.platform === 'linux64').url
-          console.log('Falling back to chromedriver:', fallbackUrl)
-          cp.execSync(`wget -q -O chromedriver.zip "${fallbackUrl}"`)
-        }
-
-        cp.execSync('unzip -q chromedriver.zip')
-        cp.execSync('sudo mv chromedriver-linux64/chromedriver /usr/local/bin/')
-        cp.execSync('sudo chmod +x /usr/local/bin/chromedriver')
-
-        cp.execSync('rm -rf chromedriver.zip chromedriver-linux64 google-chrome-stable_current_amd64.deb')
-
-        console.log('Chromedriver installed successfully')
-      } catch (error) {
-        core.setFailed('Failed to install Chromedriver: ' + error.message)
-        return
-      }
+      console.log(`Downloading Chromedriver version: ${stableChannel.version}`)
+      cp.execSync(`wget -q -O /tmp/chromedriver-linux64.zip "${chromedriverUrl}"`)
+      cp.execSync('unzip -q /tmp/chromedriver-linux64.zip -d /tmp/chromedriver-linux64')
+      cp.execSync('sudo mv /tmp/chromedriver-linux64/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver')
+      cp.execSync('sudo chmod +x /usr/local/bin/chromedriver')
     }
     if (chrome || prodAptDeps || postgres) {
       cp.execSync("DEBIAN_FRONTEND=noninteractive sudo apt-get update")
