@@ -50,6 +50,7 @@ jobs:
 
       - name: Test payment
         run: |
+          ln -sf keystore_ekeys.yml-devbox config/keystore_ekeys.yml
           bundle config set --local path vendor/bundle
           bundle install
           bundle exec rspec
