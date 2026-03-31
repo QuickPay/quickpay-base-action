@@ -30,16 +30,16 @@ async function run() {
       console.log(`Downloading Chrome version: ${stableChannel.version}`);
       cp.execSync(`wget -q -O /tmp/chrome.zip "${chromeUrl}"`);
       cp.execSync('rm -rf /tmp/chrome');
-      cp.execSync('sudo rm -rf /opt/chrome');
+      cp.execSync('sudo rm -rf /opt/google/chrome');
       cp.execSync('unzip -q /tmp/chrome.zip -d /tmp/chrome');
 
-      // Move full directory
-      cp.execSync('sudo mkdir -p /opt/chrome');
-      cp.execSync('sudo mv /tmp/chrome/chrome-linux64 /opt/chrome/');
+      // Install Chrome where Selenium is already finding it
+      cp.execSync('sudo mkdir -p /opt/google/chrome');
+      cp.execSync('sudo mv /tmp/chrome/chrome-linux64/* /opt/google/chrome/');
 
       // Symlink
-      cp.execSync('sudo ln -sf /opt/chrome/chrome-linux64/chrome /usr/local/bin/google-chrome');
-      cp.execSync('sudo chmod +x /opt/chrome/chrome-linux64/chrome');
+      cp.execSync('sudo ln -sf /opt/google/chrome/chrome /usr/local/bin/google-chrome');
+      cp.execSync('sudo chmod +x /opt/google/chrome/chrome');
 
       console.log(`Downloading Chromedriver version: ${stableChannel.version}`);
       cp.execSync(`wget -q -O /tmp/chromedriver.zip "${chromedriverUrl}"`);
@@ -53,6 +53,11 @@ async function run() {
       // Symlink
       cp.execSync('sudo ln -sf /opt/chromedriver/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver');
       cp.execSync('sudo chmod +x /opt/chromedriver/chromedriver-linux64/chromedriver');
+
+      // Debug
+      cp.execSync('/opt/google/chrome/chrome --version', { stdio: 'inherit' });
+      cp.execSync('google-chrome --version', { stdio: 'inherit' });
+      cp.execSync('chromedriver --version', { stdio: 'inherit' });
     }
     if (chrome || prodAptDeps || postgres) {
       cp.execSync("DEBIAN_FRONTEND=noninteractive sudo apt-get update")
