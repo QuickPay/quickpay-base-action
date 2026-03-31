@@ -21,13 +21,13 @@ async function run() {
 
     if (chrome) {
       cp.execSync('wget -q -O /tmp/chrome-versions.json "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json"')
-      const stableChannel = JSON.parse(fs.readFileSync('/tmp/chrome-versions.json', 'utf8')).channels.Stable
-      const downloads = stableChannel.downloads
+      const stableChannel = JSON.parse(fs.readFileSync('/tmp/chrome-versions.json', 'utf8')).channels.Stable;
+      const downloads = stableChannel.downloads;
 
-      const chromeUrl = downloads.chrome.find(d => d.platform === 'linux64').url
-      const chromedriverUrl = downloads.chromedriver.find(d => d.platform === 'linux64').url
+      const chromeUrl = downloads.chrome.find(d => d.platform === 'linux64').url;
+      const chromedriverUrl = downloads.chromedriver.find(d => d.platform === 'linux64').url;
 
-      console.log(`Downloading Chrome version: ${stableChannel.version}`)
+      console.log(`Downloading Chrome version: ${stableChannel.version}`);
       cp.execSync(`wget -q -O /tmp/chrome.zip "${chromeUrl}"`);
       cp.execSync('rm -rf /tmp/chrome');
       cp.execSync('sudo rm -rf /opt/chrome');
